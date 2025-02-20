@@ -28,7 +28,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Cnds.CompareVar,
 		C3.Plugins.System.Cnds.Every,
 		C3.Plugins.System.Acts.AddVar,
-		C3.Plugins.Touch.Cnds.OnTouchObject,
+		C3.Plugins.Touch.Cnds.IsTouchingObject,
 		C3.Plugins.Keyboard.Cnds.IsKeyDown,
 		C3.Behaviors.EightDir.Acts.SimulateControl,
 		C3.Plugins.Sprite.Acts.SetMirrored,
@@ -70,7 +70,8 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Cnds.CompareBetween,
 		C3.Behaviors.EightDir.Acts.SetMaxSpeed,
 		C3.Plugins.Spritefont2.Acts.SetText,
-		C3.Plugins.Mouse.Cnds.OnObjectClicked
+		C3.Plugins.Mouse.Cnds.OnObjectClicked,
+		C3.Plugins.Touch.Cnds.OnTouchObject
 	];
 };
 self.C3_JsPropNameTable = [
