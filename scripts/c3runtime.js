@@ -1485,6 +1485,8 @@ self.C3_ExpressionFuncs = [
 		() => 1,
 		() => 0,
 		() => "Start",
+		() => "initTelegramMiniApp()",
+		() => "window.Telegram.WebApp.expand()",
 		() => "Player",
 		p => {
 			const n0 = p._GetNode(0);
@@ -1507,8 +1509,6 @@ self.C3_ExpressionFuncs = [
 			const v0 = p._GetNode(0).GetVar();
 			return () => and("Total Score: ", v0.GetValue());
 		},
-		() => "key_1",
-		() => "key_2",
 		() => 30,
 		() => 60,
 		() => 20,
@@ -1792,7 +1792,9 @@ self.C3_ExpressionFuncs = [
 			return () => f0(1, 10);
 		},
 		() => 13,
+		() => "key_1",
 		() => 42,
+		() => "key_2",
 		() => "test",
 		() => -1,
 		() => 200,
