@@ -1311,6 +1311,179 @@ const C3=self.C3,GESTURE_HOLD_THRESHOLD=15,GESTURE_HOLD_TIMEOUT=500,GESTURE_TAP_
 {const a=self.C3;a.Plugins.PlatformInfo=class extends a.SDKPluginBase{constructor(e){super(e)}Release(){super.Release()}}}{const d=self.C3;d.Plugins.PlatformInfo.Type=class extends d.SDKTypeBase{constructor(e){super(e)}Release(){super.Release()}OnCreate(){}}}{const g=self.C3,h="platform-info";g.Plugins.PlatformInfo.Instance=class extends g.SDKInstanceBase{constructor(e,t){super(e,h),this._screenWidth=0,this._screenHeight=0,this._windowOuterWidth=0,this._windowOuterHeight=0,this._safeAreaInset=[0,0,0,0],this._supportsWakeLock=!1,this._isWakeLockActive=!1,this.AddDOMMessageHandlers([["window-resize",e=>this._OnWindowResize(e)],["wake-lock-acquired",e=>this._OnWakeLockAcquired(e)],["wake-lock-error",e=>this._OnWakeLockError(e)],["wake-lock-released",e=>this._OnWakeLockReleased(e)]]),navigator.connection&&navigator.connection.addEventListener("change",()=>this._OnNetworkChange()),this._runtime.AddLoadPromise(this.PostToDOMAsync("get-initial-state").then(e=>{this._screenWidth=e["screenWidth"],this._screenHeight=e["screenHeight"],this._windowOuterWidth=e["windowOuterWidth"],this._windowOuterHeight=e["windowOuterHeight"],this._safeAreaInset=e["safeAreaInset"],this._supportsWakeLock=e["supportsWakeLock"]}))}Release(){super.Release()}_OnWindowResize(e){this._windowOuterWidth=e["windowOuterWidth"],this._windowOuterHeight=e["windowOuterHeight"],this._safeAreaInset=e["safeAreaInset"]}async _OnNetworkChange(){await this.TriggerAsync(g.Plugins.PlatformInfo.Cnds.OnNetworkChange)}async _OnWakeLockAcquired(){this._isWakeLockActive=!0,await this.TriggerAsync(g.Plugins.PlatformInfo.Cnds.OnWakeLockAcquired)}async _OnWakeLockError(){this._isWakeLockActive=!1,await this.TriggerAsync(g.Plugins.PlatformInfo.Cnds.OnWakeLockError)}async _OnWakeLockReleased(){this._isWakeLockActive=!1,await this.TriggerAsync(g.Plugins.PlatformInfo.Cnds.OnWakeLockReleased)}}}{const r=self.C3;r.Plugins.PlatformInfo.Cnds={IsOnMobile(){return r.Platform.IsMobile},IsOnWindows(){return"Windows"===r.Platform.OS},IsOnMacOS(){return"macOS"===r.Platform.OS},IsOnLinux(){return"Linux"===r.Platform.OS},IsOnChromeOS(){return"Chrome OS"===r.Platform.OS},IsOnAndroid(){return"Android"===r.Platform.OS},IsOniOS(){return"iOS"===r.Platform.OS},IsWebExport(){const e=this._runtime.GetExportType();return"html5"===e||"scirra-arcade"===e||"preview"===e||"instant-games"===e},IsCordovaExport(){return this._runtime.IsCordova()},IsNWjsExport(){return this._runtime.IsNWjs()},IsWindowsUWPExport(){return"windows-uwp"===this._runtime.GetExportType()},IsWindowsWebView2Export(){return this._runtime.IsWindowsWebView2()},IsMacOSWKWebView2Export(){return"macos-wkwebview"===this._runtime.GetExportType()},IsLinuxCEFExport(){return"linux-cef"===this._runtime.GetExportType()},OnNetworkChange(){return!0},OnWakeLockAcquired(){return!0},OnWakeLockError(){return!0},OnWakeLockReleased(){return!0},IsWakeLockActive(){return this._isWakeLockActive},IsWakeLockSupported(){return this._supportsWakeLock}}}{const t=self.C3;t.Plugins.PlatformInfo.Acts={RequestWakeLock(){this._supportsWakeLock&&this._PostToDOMMaybeSync("request-wake-lock")},ReleaseWakeLock(){this._supportsWakeLock&&(this._isWakeLockActive=!1,this.PostToDOM("release-wake-lock"))}}}{const u=self.C3;u.Plugins.PlatformInfo.Exps={Renderer(){return this._runtime.GetCanvasManager().GetRendererString()},RendererDetail(){return this._runtime.GetCanvasManager().GetRendererDetailString()},DevicePixelRatio(){return this._runtime.GetDevicePixelRatio()},ScreenWidth(){return this._screenWidth},ScreenHeight(){return this._screenHeight},WindowInnerWidth(){return this._runtime.GetCanvasManager().GetLastWidth()},WindowInnerHeight(){return this._runtime.GetCanvasManager().GetLastHeight()},WindowOuterWidth(){return this._windowOuterWidth},WindowOuterHeight(){return this._windowOuterHeight},CanvasCssWidth(){return this._runtime.GetCanvasManager().GetCssWidth()},CanvasCssHeight(){return this._runtime.GetCanvasManager().GetCssHeight()},CanvasDeviceWidth(){return this._runtime.GetCanvasManager().GetDeviceWidth()},CanvasDeviceHeight(){return this._runtime.GetCanvasManager().GetDeviceHeight()},Downlink(){return navigator.connection&&navigator.connection["downlink"]||0},DownlinkMax(){return navigator.connection&&navigator.connection["downlinkMax"]||0},ConnectionType(){return navigator.connection&&navigator.connection["type"]||"unknown"},ConnectionEffectiveType(){return navigator.connection&&navigator.connection["effectiveType"]||"unknown"},ConnectionRTT(){return navigator.connection&&navigator.connection["rtt"]||0},HardwareConcurrency(){return navigator.hardwareConcurrency||0},DeviceMemory(){return navigator.deviceMemory||0},SafeAreaInsetTop(){return this._safeAreaInset[0]},SafeAreaInsetRight(){return this._safeAreaInset[1]},SafeAreaInsetBottom(){return this._safeAreaInset[2]},SafeAreaInsetLeft(){return this._safeAreaInset[3]},FramesPerSecond(){return this._runtime.GetFramesPerSecond()},TicksPerSecond(){return this._runtime.GetTicksPerSecond()}}}
 }
 
+// scripts/plugins/GM_SDK/c3runtime/plugin.js
+{
+"use strict";
+
+{
+  C3.Plugins.GM_SDK = class SingleGlobalPlugin extends C3.SDKPluginBase {
+    constructor(opts) {
+      super(opts);
+    }
+
+    Release() {
+      super.Release();
+    }
+  };
+}
+}
+
+// scripts/plugins/GM_SDK/c3runtime/type.js
+{
+"use strict";
+
+{
+	C3.Plugins.GM_SDK.Type = class SingleGlobalType extends C3.SDKTypeBase
+	{
+		constructor(objectClass)
+		{
+			super(objectClass);
+		}
+		
+		Release()
+		{
+			super.Release();
+		}
+		
+		OnCreate()
+		{	
+		}
+	};
+}
+}
+
+// scripts/plugins/GM_SDK/c3runtime/instance.js
+{
+"use strict";
+
+{
+  C3.Plugins.GM_SDK.Instance = class SingleGlobalInstance extends C3.SDKInstanceBase {
+    constructor(inst, properties) {
+      super(inst);
+
+      // Initialise object properties
+      this._gameID = "";
+      this._sdkReady = false;
+      this._adPlaying = false;
+      this._adViewed = false;
+      this._preloadedAd = false;
+      this._available_adtypes = ["interstitial"];
+
+      if (properties) {
+        this._gameID = properties[0];
+      }
+
+      window.SDK_OPTIONS = {
+        gameId: this._gameID,
+        onEvent: event => {
+          switch (event.name) {
+            case "SDK_GAME_START":
+              // advertisement done, resume game logic and unmute audio
+              this._adPlaying = false;
+              break;
+            case "SDK_GAME_PAUSE":
+              // pause game logic / mute audio
+              this._adPlaying = true;
+              break;
+            case "COMPLETE":
+              // this event is triggered when the user watched an entire ad
+              this._adViewed = true;
+              setTimeout(() => {
+                this._adViewed = false;
+              }, 5000);
+              break;
+            case "SDK_READY":
+              this._sdkReady = true;
+              break;
+          }
+        }
+      };
+
+      (function(d, s, id) {
+        var js,
+          fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//api.gamemonetize.com/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, "script", "gamemonetize-sdk");
+    }
+
+    Release() {
+      super.Release();
+    }
+
+    SaveToJson() {
+      return {
+        // data to be saved for savegames
+      };
+    }
+
+    LoadFromJson(o) {
+      // load state for savegames
+    }
+ 
+    ShowAd() {
+      var sdk = window["sdk"];
+      if (sdk !== "undefined" && sdk.showBanner !== "undefined") {
+        sdk.showBanner();
+      }
+    }
+  };
+}
+
+}
+
+// scripts/plugins/GM_SDK/c3runtime/conditions.js
+{
+"use strict";
+
+{
+  C3.Plugins.GM_SDK.Cnds = {
+    ResumeGame() {
+      return !this._adPlaying;
+    },
+    PauseGame() {
+      return this._adPlaying;
+    },
+    PreloadedAd() {
+      return this._preloadedAd;
+    },
+    AdViewed() {
+      return this._adViewed;
+    }
+  };
+}
+
+}
+
+// scripts/plugins/GM_SDK/c3runtime/actions.js
+{
+"use strict";
+
+{
+  C3.Plugins.GM_SDK.Acts = {
+    ShowAd() {
+      this.ShowAd();
+    }
+  };
+}
+
+}
+
+// scripts/plugins/GM_SDK/c3runtime/expressions.js
+{
+"use strict";
+
+{
+	C3.Plugins.GM_SDK.Exps =
+	{
+		
+	};
+}
+}
+
 // scripts/behaviors/solid/c3runtime/runtime.js
 {
 {const a=self.C3;a.Behaviors.solid=class extends a.SDKBehaviorBase{constructor(e){super(e)}Release(){super.Release()}}}{const d=self.C3;d.Behaviors.solid.Type=class extends d.SDKBehaviorTypeBase{constructor(e){super(e)}Release(){super.Release()}OnCreate(){}}}{const g=self.C3,h=self.C3X,i=self.IBehaviorInstance,j=0,k=1,l=new Set,m=(g.Behaviors.solid.Instance=class extends g.SDKBehaviorInstanceBase{constructor(e,s){super(e),this.SetEnabled(!0),s&&(this.SetEnabled(s[j]),this.SetTags(s[k]))}Release(){super.Release()}SetEnabled(e){this._inst._SetSolidEnabled(!!e)}IsEnabled(){return this._inst._IsSolidEnabled()}SetTags(s){const t=this._inst.GetSavedDataMap();if(s.trim()){let e=t.get("solidTags");e||(e=new Set,t.set("solidTags",e)),e.clear();for(const a of s.split(" "))a&&e.add(a.toLowerCase())}else t.delete("solidTags")}GetTags(){return this._inst.GetSavedDataMap().get("solidTags")||l}_GetTagsString(){return[...this.GetTags()].join(" ")}SaveToJson(){return{"e":this.IsEnabled()}}LoadFromJson(e){this.SetEnabled(e["e"])}GetPropertyValueByIndex(e){if(e===j)return this.IsEnabled()}SetPropertyValueByIndex(e,s){e===j&&this.SetEnabled(s)}GetDebuggerProperties(){return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:"behaviors.solid.properties.enabled.name",value:this.IsEnabled(),onedit:e=>this.SetEnabled(e)},{name:"behaviors.solid.properties.tags.name",value:this._GetTagsString(),onedit:e=>this.SetTags(e)}]}]}GetScriptInterfaceClass(){return self.ISolidBehaviorInstance}},new WeakMap);self.ISolidBehaviorInstance=class extends i{constructor(){super(),m.set(this,i._GetInitInst().GetSdkInstance())}set isEnabled(e){m.get(this).SetEnabled(!!e)}get isEnabled(){return m.get(this).IsEnabled()}set tags(e){h.RequireString(e),m.get(this).SetTags(e)}get tags(){return m.get(this)._GetTagsString()}}}{const E=self.C3;E.Behaviors.solid.Cnds={IsEnabled(){return this.IsEnabled()}}}{const F=self.C3;F.Behaviors.solid.Acts={SetEnabled(e){this.SetEnabled(e)},SetTags(e){this.SetTags(e)}}}{const I=self.C3;I.Behaviors.solid.Exps={}}
@@ -1485,8 +1658,6 @@ self.C3_ExpressionFuncs = [
 		() => 1,
 		() => 0,
 		() => "Start",
-		() => "initTelegramMiniApp()",
-		() => "window.Telegram.WebApp.expand()",
 		() => "Player",
 		p => {
 			const n0 = p._GetNode(0);
@@ -1792,13 +1963,8 @@ self.C3_ExpressionFuncs = [
 			return () => f0(1, 10);
 		},
 		() => 13,
-		() => "key_1",
-		() => 42,
-		() => "key_2",
-		() => "test",
 		() => -1,
-		() => 200,
-		() => "Main"
+		() => 200
 ];
 
 

@@ -19,6 +19,7 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.Touch,
 		C3.Plugins.Browser,
 		C3.Plugins.PlatformInfo,
+		C3.Plugins.GM_SDK,
 		C3.Behaviors.Platform,
 		C3.Plugins.System.Cnds.IsGroupActive,
 		C3.Plugins.Touch.Cnds.OnTapGestureObject,
@@ -28,7 +29,6 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.System.Acts.SetTimescale,
 		C3.Plugins.System.Cnds.OnLayoutStart,
-		C3.Plugins.Browser.Acts.ExecJs,
 		C3.Plugins.System.Acts.CreateObject,
 		C3.Plugins.Sprite.Exps.X,
 		C3.Plugins.Sprite.Exps.Y,
@@ -79,19 +79,9 @@ self.C3_GetObjectRefTable = function () {
 		C3.Plugins.System.Cnds.CompareBetween,
 		C3.Behaviors.EightDir.Acts.SetMaxSpeed,
 		C3.Plugins.System.Acts.GoToLayout,
-		C3.Plugins.PlaygamaBridge.Acts.AppendStorageDataSetRequest,
-		C3.Plugins.PlaygamaBridge.Acts.SendStorageDataSetRequest,
 		C3.Plugins.Spritefont2.Acts.SetText,
 		C3.Plugins.Mouse.Cnds.OnObjectClicked,
-		C3.Plugins.PlaygamaBridge.Acts.ShowInterstitial,
-		C3.Plugins.Touch.Cnds.OnTouchObject,
-		C3.Plugins.PlaygamaBridge.Cnds.OnInterstitialOpened,
-		C3.Plugins.Audio.Acts.SetMuted,
-		C3.Plugins.PlaygamaBridge.Cnds.OnInterstitialLoading,
-		C3.Plugins.PlaygamaBridge.Acts.AppendStorageDataDeleteRequest,
-		C3.Plugins.PlaygamaBridge.Acts.SendStorageDataDeleteRequest,
-		C3.Plugins.PlaygamaBridge.Cnds.OnStorageDataDeleteRequestCompleted,
-		C3.Plugins.PlaygamaBridge.Cnds.IsLastActionCompletedSuccessfully
+		C3.Plugins.Touch.Cnds.OnTouchObject
 	];
 };
 self.C3_JsPropNameTable = [
@@ -218,6 +208,7 @@ self.C3_JsPropNameTable = [
 	{Browser: 0},
 	{Sprite11: 0},
 	{PlatformInfo: 0},
+	{GameMonetizeSDK: 0},
 	{Pin2: 0},
 	{Platform: 0},
 	{EnemyAnimations: 0},
@@ -357,5 +348,6 @@ self.InstanceType = {
 	Browser: class extends self.IInstance {},
 	Sprite11: class extends self.ISpriteInstance {},
 	PlatformInfo: class extends self.IInstance {},
+	GameMonetizeSDK: class extends self.IInstance {},
 	EnemyAnimations: class extends self.ISpriteInstance {}
 }
