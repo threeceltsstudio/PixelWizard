@@ -70,5 +70,78 @@ self["${t}"]();`,document.head.appendChild(r)}):new Promise((e,t)=>{r.onload=e,r
 // scripts/plugins/PlatformInfo/dom/domSide.js
 "use strict";{const a="platform-info";function GetAndroidInsetTop(s){return new Promise((e,t)=>{s["getInsetTop"](e,t)})}function GetAndroidInsetRight(s){return new Promise((e,t)=>{s["getInsetRight"](e,t)})}function GetAndroidInsetBottom(s){return new Promise((e,t)=>{s["getInsetBottom"](e,t)})}function GetAndroidInsetLeft(s){return new Promise((e,t)=>{s["getInsetLeft"](e,t)})}const b=class extends self.DOMHandler{constructor(e){super(e,a),this.AddRuntimeMessageHandlers([["get-initial-state",()=>this._OnGetInitialState()],["request-wake-lock",()=>this._OnRequestWakeLock()],["release-wake-lock",()=>this._OnReleaseWakeLock()]]),window.addEventListener("resize",()=>this._OnResize()),this._screenWakeLock=null}async _OnGetInitialState(){const e=await this._GetSafeAreaInset();return{"screenWidth":screen.width,"screenHeight":screen.height,"windowOuterWidth":window.outerWidth,"windowOuterHeight":window.outerHeight,"safeAreaInset":e,"supportsWakeLock":!!navigator["wakeLock"]}}async _GetSafeAreaInset(){const e=self["AndroidNotch"];if(!e){const t=document.body,s=t.style,n=(s.setProperty("--temp-sai-top","env(safe-area-inset-top)"),s.setProperty("--temp-sai-right","env(safe-area-inset-right)"),s.setProperty("--temp-sai-bottom","env(safe-area-inset-bottom)"),s.setProperty("--temp-sai-left","env(safe-area-inset-left)"),getComputedStyle(t)),o=[n.getPropertyValue("--temp-sai-top"),n.getPropertyValue("--temp-sai-right"),n.getPropertyValue("--temp-sai-bottom"),n.getPropertyValue("--temp-sai-left")].map(e=>{const t=parseInt(e,10);return isFinite(t)?t:0});return s.removeProperty("--temp-sai-top"),s.removeProperty("--temp-sai-right"),s.removeProperty("--temp-sai-bottom"),s.removeProperty("--temp-sai-left"),o}try{return await Promise.all([GetAndroidInsetTop(e),GetAndroidInsetRight(e),GetAndroidInsetBottom(e),GetAndroidInsetLeft(e)])}catch(e){return console.error("[Construct] Failed to get Android safe area inset: ",e),[0,0,0,0]}}async _OnResize(){const e=await this._GetSafeAreaInset();this.PostToRuntime("window-resize",{"windowOuterWidth":window.outerWidth,"windowOuterHeight":window.outerHeight,"safeAreaInset":e})}async _OnRequestWakeLock(){if(!this._screenWakeLock)try{this._screenWakeLock=await navigator["wakeLock"]["request"]("screen"),this._screenWakeLock.addEventListener("release",()=>this._OnWakeLockReleased()),console.log("[Construct] Screen wake lock acquired"),this.PostToRuntime("wake-lock-acquired")}catch(e){console.warn("[Construct] Failed to acquire screen wake lock: ",e),this.PostToRuntime("wake-lock-error")}}_OnReleaseWakeLock(){this._screenWakeLock&&(this._screenWakeLock["release"](),this._screenWakeLock=null)}_OnWakeLockReleased(){console.log("[Construct] Screen wake lock released"),this._screenWakeLock=null,this.PostToRuntime("wake-lock-released")}};self.RuntimeInterface.AddDOMHandlerClass(b)}
 
+// scripts/plugins/gpx_GamePixSDK/c3runtime/domSide.js
+"use strict";
+
+{
+	const GamePix = globalThis.GamePix;
+	const DOM_COMPONENT_ID = "gpx_GamePixSDKPlugin";
+	
+const HANDLER_CLASS = class ExampleDOMHandler extends globalThis.DOMHandler
+	{
+		constructor(iRuntime)
+		{
+			super(iRuntime, DOM_COMPONENT_ID);
+	
+			this.AddRuntimeMessageHandlers([
+	            ["loading", (num) => {
+                	if (GamePix) GamePix.loading(num);
+                }],
+                ["loaded", () => {
+                	if (GamePix) GamePix.loaded();
+                }],
+                ["setItem", ({key, value}) => {
+                	if (GamePix) GamePix.localStorage.setItem(key, value);
+                }],
+                ["removeItem", (key) => {
+                	if (GamePix) GamePix.localStorage.removeItem(key);
+                }],
+                ["updateScore", (num) => {
+                	if (GamePix) GamePix.updateScore(num);
+                }],
+                ["updateLevel", (num) => {
+                	if (GamePix) GamePix.updateLevel(num);
+                }],
+                ["happyMoment", () => {
+                	if (GamePix) GamePix.happyMoment();
+                }],
+                ["interstitialAd", () => {
+                	if (GamePix) {
+	                	GamePix.interstitialAd().then(res => {
+	                		this.PostToRuntime('interstitialAd', {success: res.success});
+	                	});
+                	} else { 
+                		this.PostToRuntime('interstitialAd', {success: false});
+                	}
+                }],
+                ["rewardedAd", () => {
+                	if (GamePix) {
+	                	GamePix.rewardAd().then(res => {
+	                		this.PostToRuntime('rewardedAd', {success: res.success});
+	                	});
+                	} else { 
+                		this.PostToRuntime('rewardedAd', {success: false});
+                	}
+                }],
+                ["requestItem", (key) => {
+                	if (GamePix) return GamePix.localStorage.getItem(key);
+                	return null;
+                }],
+            ]);
+            
+            if (GamePix) {
+            	this.PostToRuntime('lang', GamePix.lang());
+            	GamePix.pause = () => {
+            		this.PostToRuntime('pause');
+            	}
+            	GamePix.resume = () => {
+            		this.PostToRuntime('resume');
+            	}
+            }
+		}
+	};
+	globalThis.RuntimeInterface.AddDOMHandlerClass(HANDLER_CLASS);
+}
+
 // start-export.js
 "use strict";if(window["C3_Is_Supported"]){const a=false;window["c3_runtimeInterface"]=new self.RuntimeInterface({useWorker:a,workerMainUrl:"workermain.js",runtimeScriptList:["scripts/c3main.js"],scriptFolder:"scripts/",exportType:"html5"})}
