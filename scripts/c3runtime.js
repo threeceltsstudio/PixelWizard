@@ -1203,6 +1203,21 @@ const C3=self.C3;C3.JobSchedulerRuntime=class extends C3.DefendedBase{constructo
 // scripts/shaders.js
 {
 self["C3_Shaders"] = {};
+self["C3_Shaders"]["depthstripe"] = {
+	glsl: "varying mediump vec2 vTex;\nuniform lowp sampler2D samplerFront;\nuniform mediump vec2 srcStart;\nuniform mediump vec2 srcEnd;\nuniform lowp sampler2D samplerDepth;\nuniform mediump vec2 destStart;\nuniform mediump vec2 destEnd;\nuniform mediump float zNear;\nuniform mediump float zFar;\nuniform lowp vec3 color1;\nuniform lowp float opacity1;\nuniform lowp vec3 color2;\nuniform lowp float opacity2;\nuniform mediump float stripeDepth;\nuniform mediump float stripeOffset;\nvoid main(void)\n{\nlowp vec4 front = texture2D(samplerFront, vTex);\nmediump vec2 tex = (vTex - srcStart) / (srcEnd - srcStart);\nmediump float depthSample = texture2D(samplerDepth, mix(destStart, destEnd, tex)).r;\nmediump float zLinear = zNear * zFar / (zFar + depthSample * (zNear - zFar));\nlowp float which = mod(floor((zLinear + stripeOffset) / stripeDepth), 2.0);\nif (which == 0.0)\n{\ngl_FragColor = mix(front, vec4(color1 * front.a, front.a), opacity1);\n}\nelse\n{\ngl_FragColor = mix(front, vec4(color2 * front.a, front.a), opacity2);\n}\n}",
+	glslWebGL2: "",
+	wgsl: "%%SAMPLERFRONT_BINDING%% var samplerFront : sampler;\n%%TEXTUREFRONT_BINDING%% var textureFront : texture_2d<f32>;\n%%SAMPLERDEPTH_BINDING%% var samplerDepth : sampler;\n%%TEXTUREDEPTH_BINDING%% var textureDepth : texture_depth_2d;\nstruct ShaderParams {\ncolor1 : vec3<f32>,\nopacity1 : f32,\ncolor2 : vec3<f32>,\nopacity2 : f32,\nstripeDepth : f32,\nstripeOffset : f32\n};\n%%SHADERPARAMS_BINDING%% var<uniform> shaderParams : ShaderParams;\n%%C3PARAMS_STRUCT%%\n%%FRAGMENTINPUT_STRUCT%%\n%%FRAGMENTOUTPUT_STRUCT%%\n@fragment\nfn main(input : FragmentInput) -> FragmentOutput\n{\nvar front : vec4<f32> = textureSample(textureFront, samplerFront, input.fragUV);\nvar depthSample : f32 = textureSample(textureDepth, samplerDepth, c3_getDepthUV(input.fragPos.xy, textureDepth));\nvar zLinear : f32 = c3_linearizeDepth(depthSample);\nvar which : f32 = floor((zLinear + shaderParams.stripeOffset) / shaderParams.stripeDepth) % 2.0;\nvar stripeColor : vec3<f32> = select(shaderParams.color2, shaderParams.color1, which == 0.0);\nvar stripeOpacity : f32 = select(shaderParams.opacity2, shaderParams.opacity1, which == 0.0);\nvar output : FragmentOutput;\noutput.color = mix(front, vec4<f32>(stripeColor * front.a, front.a), stripeOpacity);\nreturn output;\n}",
+	blendsBackground: false,
+	usesDepth: true,
+	extendBoxHorizontal: 0,
+	extendBoxVertical: 0,
+	crossSampling: false,
+	mustPreDraw: false,
+	preservesOpaqueness: false,
+	supports3dDirectRendering: false,
+	animated: false,
+	parameters: [["color1",0,"color"],["opacity1",0,"percent"],["color2",0,"color"],["opacity2",0,"percent"],["stripeDepth",0,"float"],["stripeOffset",0,"float"]]
+};
 
 }
 
@@ -1482,15 +1497,16 @@ self.C3_ExpressionFuncs = [
 		() => "PlayGama",
 		() => -500,
 		() => -10,
+		() => "(function() {\n    const parent = window.parent;\n    if (parent) {\n        parent.postMessage({ playdeck: { method: 'showAd' } }, '*');\n        console.log('Ad request sent to PlayDeck.');\n    } else {\n        console.error('Parent window is undefined. Are you running in an iframe?');\n    }\n})();\n",
 		() => 0,
 		() => 1,
 		() => "Start",
 		() => "const parent = window.parent.window;\n\n// Call the loading method without passing a value to start displaying the loading process\nparent.postMessage({ playdeck: { method: 'loading' } }, '*');\n\n// Delay setting the loading to 100% by 1 second\nsetTimeout(() => {\n    parent.postMessage({ playdeck: { method: 'loading', value: 100 } }, '*');\n}, 1000);\n",
-		() => "Player",
 		p => {
 			const n0 = p._GetNode(0);
 			return () => n0.ExpObject();
 		},
+		() => "Player",
 		() => "",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -1517,13 +1533,29 @@ self.C3_ExpressionFuncs = [
 		},
 		() => 3,
 		() => "Player Movement",
-		() => "walking",
-		() => "idle",
-		() => "Gun",
+		() => -5,
+		() => 5,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => v0.GetValue();
 		},
+		() => "walking",
+		() => "idle",
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0();
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const v1 = p._GetNode(1).GetVar();
+			return () => (f0() - v1.GetValue());
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			const v1 = p._GetNode(1).GetVar();
+			return () => (v0.GetValue() + C3.clamp(v1.GetValue(), (-25), 25));
+		},
+		() => "Gun",
 		p => {
 			const n0 = p._GetNode(0);
 			return () => n0.ExpInstVar();
@@ -1655,7 +1687,6 @@ self.C3_ExpressionFuncs = [
 			return () => (165 * v0.GetValue());
 		},
 		() => "Grif",
-		() => 5,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => (4.2 * v0.GetValue());
@@ -1736,7 +1767,6 @@ self.C3_ExpressionFuncs = [
 		() => -717706215031807,
 		() => 0.2,
 		() => -281492157629439,
-		() => "(function() {\n    const parent = window.parent;\n    if (parent) {\n        parent.postMessage({ playdeck: { method: 'showAd' } }, '*');\n        console.log('Ad request sent to PlayDeck.');\n    } else {\n        console.error('Parent window is undefined. Are you running in an iframe?');\n    }\n})();\n",
 		() => 12,
 		() => 14,
 		() => 15,
